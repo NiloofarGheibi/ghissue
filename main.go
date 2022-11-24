@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	GitHubEnterpriseURL = "https://github.mycompany.com"
-	PerPage             = 20
+	GitHubEnterpriseURL = "https://github.bus.zalan.do"
+	PerPage             = 100
 )
 
 type Parser func(string) []string
@@ -23,6 +23,7 @@ type ZD interface {
 	fetchIssues(query string, opts *github.SearchOptions) (*github.IssuesSearchResult, error)
 	fetchRepo(ctx context.Context, owner string, repo string) (*github.Repository, error)
 	extractIssueToCSV(writer *csv.Writer, parser Parser, issues []*github.Issue)
+	getIssue(ctx context.Context, owner string, repo string, number int) (*github.Issue, error)
 }
 
 type zd struct {
@@ -45,6 +46,12 @@ func newStaticAuthClient(token string, url string) (*github.Client, error) {
 		return nil, err
 	}
 	return client, nil
+}
+
+// Fetch and lists all the public topics associated with the specified GitHub topic
+func (z *zd) getIssue(ctx context.Context, owner string, repo string, number int) (*github.Issue, error) {
+	issue, _, err := z.gh.Issues.Get(ctx, owner, repo, number)
+	return issue, err
 }
 
 // Fetch and lists all the public topics associated with the specified GitHub topic

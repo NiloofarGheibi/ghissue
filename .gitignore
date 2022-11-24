@@ -15,3 +15,8 @@
 # vendor/
 
 .idea/
+
+vendor/*
+
+
+result.csv
